@@ -13,21 +13,21 @@ def parse(file: str):
 
 
 def p1(data: np.array):
-    mask = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+    mask = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
     flashes = 0
     for _ in range(100):
         data += 1
         while (data > 9).any():
             flash = data > 9
-            data += convolve(flash, mask, "same")
             flashes += flash.sum()
+            data += convolve(flash, mask, "same")
             data[flash] = -np.inf
         data[data < 0] = 0
     return flashes
 
 
 def p2(data: np.array):
-    mask = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+    mask = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
     flashes = 0
     for step in range(1, 1000):
         data += 1
