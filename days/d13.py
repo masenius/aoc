@@ -30,7 +30,7 @@ def p1(paper, folds):
 
 
 def get_string(paper):
-    padded = np.flip(np.rot90(np.pad(paper, pad_width=1, mode='constant', constant_values=0)), 0)
+    padded = np.flip(np.rot90(np.pad(paper, pad_width=1, mode='constant', constant_values=255)), 0)
     padded[padded == 0] = 255
     img = Image.fromarray(padded).convert("1")
     return pytesseract.image_to_string(img, lang='eng', config='--psm 10 --oem 3').strip()

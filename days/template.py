@@ -20,7 +20,7 @@ def p2(data):
 
 @pytest.fixture
 def test_data():
-    parse(f"inputs/{day}.input.test")
+    return parse(f"inputs/{day}.input.test")
 
 
 def test_p1(test_data):
@@ -35,16 +35,18 @@ def main():
     input_file = f'inputs/{day}.input'
 
     t0 = time.perf_counter()
+    data = parse(input_file)
     print(
         f"P1: "
-        f"{p1(parse(input_file))} "
+        f"{p1(data)} "
         f"{(time.perf_counter() - t0) * 1000:.2f} ms"
     )
 
     t0 = time.perf_counter()
+    data = parse(input_file)
     print(
         f"P2: "
-        f"{p2(parse(input_file))} "
+        f"{p2(data)} "
         f"{(time.perf_counter() - t0) * 1000:.2f} ms"
     )
 
