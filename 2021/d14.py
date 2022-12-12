@@ -14,16 +14,16 @@ def parse(file: str):
     return template, insertions
 
 
-def solve(template, insertions, rounds):
+def solve(template: str, insertions: dict, rounds: int) -> int:
     total = defaultdict(int)
-    count = {key: 0 for key in insertions.keys()}
+    count = defaultdict(int)
     for c1, c2 in pairwise(list(template)):
         count[f"{c1}{c2}"] += 1
         total[c1] += 1
         total[c2] += 1
     for _ in range(rounds):
         for k, v in count.copy().items():
-            c1, c2 = list(k)
+            c1, c2 = list(k), insertions[k]
             count[k] -= v
             count[f"{c1}{insertions[k]}"] += v
             count[f"{insertions[k]}{c2}"] += v
@@ -31,11 +31,11 @@ def solve(template, insertions, rounds):
     return max(total.values()) - min(total.values())
 
 
-def p1(template: str, insertions: dict):
+def p1(template: str, insertions: dict) -> int:
     return solve(template, insertions, 10)
 
 
-def p2(template: str, insertions: dict):
+def p2(template: str, insertions: dict) -> int:
     return solve(template, insertions, 40)
 
 

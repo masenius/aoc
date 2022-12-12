@@ -1,7 +1,7 @@
 import os
 import time
 from functools import reduce
-from typing import List, Callable
+from typing import List
 
 import pytest
 
@@ -19,29 +19,29 @@ def parse_literal(package: str, literals: List) -> str:
 
 
 def parse_operator(package: str, literals: List, versions: List) -> str:
-    if package[0] == "0":
-        length = int(package[1:16], 2)
-        sub_packages, package = package[16:16 + length], package[16 + length:]
-        while sub_packages:
-            sub_packages = parse_package(sub_packages, literals, versions)
-    elif package[0] == "1":
-        num, package = int(package[1:12], 2), package[12:]
+    len_type, package = int(package[0]), package[1:]
+    if len_type:
+        num, package = int(package[0:11], 2), package[11:]
         for _ in range(num):
             package = parse_package(package, literals, versions)
+    else:
+        length = int(package[0:15], 2)
+        sub_packages, package = package[15:15 + length], package[15 + length:]
+        while sub_packages:
+            sub_packages = parse_package(sub_packages, literals, versions)
     return package
 
 
-def expression(type_id: int) -> Callable:
-    return {
-        0: lambda x: sum(x),
-        1: lambda x: reduce(lambda a, b: a * b, x),
-        2: lambda x: min(x),
-        3: lambda x: max(x),
-        4: lambda x: x[0],
-        5: lambda x: x[0] > x[1],
-        6: lambda x: x[0] < x[1],
-        7: lambda x: x[0] == x[1],
-    }[type_id]
+expressions = (
+    sum,
+    lambda x: reduce(lambda a, b: a * b, x),
+    min,
+    max,
+    lambda x: x[0],
+    lambda x: x[0] > x[1],
+    lambda x: x[0] < x[1],
+    lambda x: x[0] == x[1],
+)
 
 
 def parse_package(package: str, literals: List, versions: List) -> str:
@@ -54,7 +54,7 @@ def parse_package(package: str, literals: List, versions: List) -> str:
         if type_id == 4 else
         parse_operator(package[6:], sub_literals, versions)
     )
-    literals.append(expression(type_id)(sub_literals))
+    literals.append(expressions[type_id](sub_literals))
 
     return package
 
